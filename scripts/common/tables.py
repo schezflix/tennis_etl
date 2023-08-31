@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey 
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float, Boolean
 from sqlalchemy.orm import relationship
 from base import Base
 
@@ -6,15 +6,61 @@ from base import Base
 class Match(Base):
     __tablename__ = 'fact_matches'
     
-    id = Column(Integer, primary_key=True, nullable=False)    
+    id = Column(Integer, primary_key=True)
+    start_date = Column(DateTime)
+    end_date = Column(DateTime)
+    prize_money = Column(Float)
+    year = Column(Integer)
     tournament_id = Column(Integer, ForeignKey('dim_tournaments.id'))
-    winner_id = Column(Integer, ForeignKey('dim_players.id'))
-    looser_id = Column(Integer, ForeignKey('dim_players.id'))
+    player_id = Column(Integer, ForeignKey('dim_players.id'))
+    opponent_id = Column(Integer, ForeignKey('dim_players.id'))
+    num_sets = Column(Integer)
+    sets_won = Column(Integer)
+    games_won = Column(Integer)
+    games_against = Column(Integer)
+    tiebreaks_won = Column(Integer)
+    tiebreaks_total = Column(Integer)
+    serve_rating = Column(Float)
+    aces = Column(Integer)
+    double_faults = Column(Integer)
+    first_serve_made = Column(Integer)
+    first_serve_attempted = Column(Integer)
+    first_serve_points_made = Column(Integer)
+    first_serve_points_attempted = Column(Integer)
+    second_serve_points_made = Column(Integer)
+    second_serve_points_attempted = Column(Integer)
+    break_points_saved = Column(Integer)
+    break_points_against = Column(Integer)
+    service_games_won = Column(Integer)
+    return_rating = Column(Float)
+    first_serve_return_points_made = Column(Integer)
+    first_serve_return_points_attempted = Column(Integer)
+    second_serve_return_points_made = Column(Integer)
+    second_serve_return_points_attempted = Column(Integer)
+    break_points_made = Column(Integer)
+    break_points_attempted = Column(Integer)
+    return_games_played = Column(Integer)
+    service_points_won = Column(Integer)
+    service_points_attempted = Column(Integer)
+    return_points_won = Column(Integer)
+    return_points_attempted = Column(Integer)
+    total_points_won = Column(Integer)
+    total_points = Column(Integer)
+    duration = Column(Integer)
+    player_victory = Column(Boolean)
+    retirement = Column(Boolean)
+    won_first_set = Column(Boolean)
     
     # relationships
     players = relationship("Player", backref="fact_matches")
     tournaments = relationship("Tournament", backref="fact_matches")
     time_dimension  = relationship("TimeDimension", back_populates="matches")
+
+class Round(Base): 
+    __tablename__ = 'dim_rounds'
+    
+    id = Column(Integer, primary_key=True, nullable=False)
+    ronda = Column(String(55))
 
     
 class Tournament(Base): # pets
@@ -29,7 +75,7 @@ class Tournament(Base): # pets
 
     winning_prize = Column(Integer(), nullable=True)
     date = Column(DateTime(), nullable=False)
-    
+        
     
 class Surface(Base): # owner
     __tablename__ = 'dim_surfaces'
