@@ -4,7 +4,34 @@ import boto3
 import os
 import datetime
 
+def date_transformation(date_string: str) -> dict:
+    date_obj = datetime.strptime(date_string, '%Y-%m-%d')
+    year = date_obj.year
+    month = date_obj.month
+    day = date_obj.day
+    day_of_week = date_obj.weekday()
+    quarter = (date_obj.month - 1) // 3 + 1
+    is_weekend = day_of_week >= 5
+    
+    result = {
+        "date": date_string,
+        "year": year,
+        "month": month,
+        "day": day,
+        "day_of_week": day_of_week,
+        "quarter": quarter,
+        "is_weekend": is_weekend
+    }
+    return result
 
+def replace_country_codes_with_names(matches_df, countries_df):
+    # Create a mapping dictionary from 'Countries' dataframe
+    country_mapping = countries_df.set_index('code')['name'].to_dict()
+
+    # Replace country codes with country names in 'Matches' dataframe
+    matches_df['location'] = matches_df['location'].apply(lambda code: country_mapping.get(code, code))
+
+    return matches_df
 
 
 def regex_striper(string:str) -> str:
