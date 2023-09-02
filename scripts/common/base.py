@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, declarative_base
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 
 username = 'postgres'
@@ -8,16 +8,14 @@ host = 'localhost'
 port = '5432'
 database = 'schezflix'
 
-# Construct the PostgreSQL URL
-postgresql_url = f'postgresql://{username}:{password}@{host}:{port}/{database}'
-
 # initialize engine
-engine = create_engine(postgresql_url)
+engine = create_engine( f'postgresql://{username}:{password}@{host}:{port}/{database}')
 
 
 # initialize the session
-session = Session(engine)
 
+Session = sessionmaker(bind=engine)
+session = Session()
 
 # initialize the declarative base
 Base = declarative_base()
