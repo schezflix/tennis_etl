@@ -11,7 +11,7 @@ BEGIN
 
     -- Step 2: Create a calendar dimension table
     CREATE TABLE schezflix.warehouse.dim_calendar (
-        date_key date PRIMARY KEY,
+        date_id date PRIMARY KEY,
         year integer,
         quarter integer,
         month integer,
@@ -23,7 +23,7 @@ BEGIN
     -- Step 3: Populate the calendar dimension table
     cur_date := min_date;
     WHILE cur_date <= max_date LOOP
-        INSERT INTO schezflix.warehouse.dim_calendar (date_key, year, quarter, month, day, day_of_week, is_weekend)
+        INSERT INTO schezflix.warehouse.dim_calendar (date_id, year, quarter, month, day, day_of_week, is_weekend)
         VALUES (cur_date,
 				EXTRACT(YEAR FROM cur_date),
 				EXTRACT(QUARTER FROM cur_date),
