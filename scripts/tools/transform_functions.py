@@ -4,8 +4,26 @@ import boto3
 import os
 import datetime
 
+
+def clean_currency(currency_input: str) -> str:
+    currency_input = str(currency_input)
+    if '€' in currency_input:
+        return currency_input.replace('€', 'euro').strip()
+    elif '$' in currency_input:
+        return currency_input.replace('$', 'dollar').strip()
+    elif '£' in currency_input:
+        return currency_input.replace('£', 'pound').strip()
+    elif 'A$' in currency_input:
+        return currency_input.replace('A$', 'au_dollar').strip()
+    else:
+        return ''
+    
+    
+def null_to_int(string: str) -> int:
+    return int(string) if string else 0
+
 def date_transformation(date_string: str) -> dict:
-    date_obj = datetime.strptime(date_string, '%Y-%m-%d')
+    date_obj = datetime.datetime.strptime(date_string, '%Y-%m-%d')
     year = date_obj.year
     month = date_obj.month
     day = date_obj.day

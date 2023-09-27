@@ -1,6 +1,10 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, Float, Boolean
 from sqlalchemy.orm import relationship
-from .base import Base
+
+from common.base import Base
+# from base import Base
+
+# from .base import Base
 
 
 class Match(Base):
@@ -10,16 +14,18 @@ class Match(Base):
     
     _start_date = Column(Date)
     _end_date = Column(Date)
-    # time_dimension_id = Column(Integer, ForeignKey('dim_date.id'))
+    
+    # foreign keys
     location_id = Column(Integer, ForeignKey('dim_countries.id'))
     surface_id = Column(Integer, ForeignKey('dim_surfaces.id'))
-    prize_money = Column(Integer)
     currency_id = Column(Integer, ForeignKey('dim_currencies.id'))
-    year = Column(Integer)
     player_id = Column(Integer, ForeignKey('dim_players.id'))
     opponent_id = Column(Integer, ForeignKey('dim_players.id'))
     tournament_id = Column(Integer, ForeignKey('dim_tournaments.id'))
-    rondas_id = Column(Integer, ForeignKey('dim_rounds.id'))
+    # rondas_id = Column(Integer, ForeignKey('dim_rounds.id'))
+  
+    prize_money = Column(Integer)
+    year = Column(Integer)
     num_sets = Column(Integer)
     sets_won = Column(Integer)
     games_won = Column(Integer)
@@ -64,12 +70,15 @@ class Match(Base):
     
     
     # relationships
-    rondas = relationship('Round', back_populates='matches')
+    # rondas = relationship('Round', back_populates='matches', primaryjoin='Match.rondas_id == Round.id')
+    # tournament = relationship('Tournament', primaryjoin='Match.tournament_id == Tournament.id', back_populates='matches')
     tournament = relationship('Tournament', back_populates='matches')
-    country = relationship('Country', back_populates='matches')
-    surface = relationship('Surface', back_populates='matches')
-    currency = relationship('Currency', back_populates='matches')
-    player = relationship('Player', back_populates='matches')
+
+    country = relationship('Country', back_populates='matches', primaryjoin='Match.location_id == Country.id')
+    surface = relationship('Surface', back_populates='matches', primaryjoin='Match.surface_id == Surface.id')
+    currency = relationship('Currency', back_populates='matches', primaryjoin='Match.currency_id == Currency.id')
+    players = relationship('Player', back_populates='matches',primaryjoin='Match.player_id == Player.id', foreign_keys=[player_id])
+    opponents = relationship('Player', foreign_keys=[opponent_id])
 
 
 class Round(Base): 
@@ -80,7 +89,7 @@ class Round(Base):
     ronda = Column(String(55))    
     
     # relationships
-    matches = relationship('Match', back_populates='rounds')
+    matches = relationship('Match', back_populates='round')
 
     
 class Tournament(Base): # pets
@@ -92,16 +101,14 @@ class Tournament(Base): # pets
     category = Column(String(255))
     location_id = Column(Integer, ForeignKey('dim_countries.id'))
     surface_id = Column(Integer, ForeignKey('dim_surfaces.id'))
-    winning_prize = Column(Integer(), nullable=True)
+    winning_prize = Column(Integer, nullable=True)
     currency_id = Column(Integer, ForeignKey('dim_currencies.id'))
-    
-    # date = Column(DateTime(), ForeignKey('dim_date.date'),nullable=False)
-    
+        
     # relationships
-    countries = relationship('Country', back_populates='tournament')
-    surfaces = relationship('Surface', back_populates='tournament')
-    matches = relationship('Match', back_populates='tournament')  
-    currency = relationship('Currency', back_populates='tournament')  
+    countries = relationship('Country') # , back_populates='tournament')
+    surfaces = relationship('Surface') #, back_populates='tournament')
+    matches = relationship('Match') #, back_populates='tournament')  
+    currency = relationship('Currency') #, back_populates='tournament')  
 
 
     # time_dimension  = relationship("TimeDimension", back_populates="dim_tournaments")
