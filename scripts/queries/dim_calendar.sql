@@ -4,12 +4,12 @@ DECLARE
     max_date DATE;
     cur_date DATE;
 BEGIN
-    -- Step 1: Find the minimum and maximum date values
+    -- Find the minimum and maximum date values
     SELECT MIN(start_date), MAX(end_date)
     INTO min_date, max_date
     FROM matches_nu;
 
-    -- Step 2: Create a calendar dimension table
+    -- Create a calendar dimension table
     CREATE TABLE schezflix.warehouse.dim_calendar (
         date_id date PRIMARY KEY,
         year integer,
@@ -20,7 +20,7 @@ BEGIN
 		is_weekend boolean
     );
 
-    -- Step 3: Populate the calendar dimension table
+    -- Populate the calendar dimension table
     cur_date := min_date;
     WHILE cur_date <= max_date LOOP
         INSERT INTO schezflix.warehouse.dim_calendar (date_id, year, quarter, month, day, day_of_week, is_weekend)
